@@ -1,3 +1,6 @@
+# TS build
+lib/
+
 # Logs
 logs
 *.log

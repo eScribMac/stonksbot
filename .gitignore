@@ -1,6 +1,9 @@
 # TS build
 lib/
 
+# db
+db/db.db
+
 # Logs
 logs
 *.log

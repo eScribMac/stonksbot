@@ -1,21 +1,19 @@
-import { Message, TextChannel } from "discord.js";
-import { fileURLToPath } from "node:url";
-
-import bot, { server } from "../bot";
-import { rankingsHandler, portfolioHandler } from "./portfolio";
-import { quoteHandler, quoteCryptoHandler } from "./quote";
+import { Message, Snowflake, TextChannel } from "discord.js";
+const { bot, server } = await import("../bot.js");
+import { rankingsHandler, portfolioHandler } from "./portfolio.js";
+import { quoteHandler, quoteCryptoHandler } from "./quote.js";
 import {
   buyHandler,
   sellHandler,
   buyCryptoHandler,
   sellCryptoHandler,
-} from "./transact";
+} from "./transact.js";
 
 interface Command {
   name: string;
   description: string;
   example: string;
-  handler: (args?: string[]) => string[];
+  handler: (id: Snowflake, args: string[]) => Promise<string[]> | string[];
 }
 
 const COMMANDS: { [key: string]: Command } = {
@@ -27,14 +25,15 @@ const COMMANDS: { [key: string]: Command } = {
   },
   "!rankings": {
     name: "!rankings",
-    description: "Lists all members of the server and their current balance",
+    description:
+      "Lists all members of the server and their current balance. NOT YET IMPLEMENTED",
     example: "!rankings",
     handler: rankingsHandler,
   },
   "!portfolio": {
     name: "!portfolio",
     description: "Detail on a specific users portfolio",
-    example: `!portfolio ${server.owner!.user}`,
+    example: `!portfolio ${server.owner?.user}`,
     handler: portfolioHandler,
   },
   "!quote": {
@@ -82,6 +81,7 @@ function helpHandler() {
     messagesToSend.push(prepareCommandMessage(command));
   });
   messagesToSend.push("and remember, stonks only go up!");
+  messagesToSend.push("BTW everything is disabled rn");
   return messagesToSend;
 }
 
@@ -91,17 +91,21 @@ function prepareCommandMessage({ name, description, example }: Command) {
   );
 }
 
-function handleMessage(message: Message) {
+async function handleMessage(message: Message) {
   try {
     const [_mention, command, ...args] = message.content.split(" ");
     if (COMMANDS[command]) {
-      const responses = COMMANDS[command].handler(args);
+      const responses = await COMMANDS[command].handler(
+        message.author.id,
+        args || []
+      );
       sendSlowly(message.channel as TextChannel, responses);
     } else {
       message.channel.send(`I don't understand how to ${command}. Try !help`);
     }
   } catch (e) {
     message.channel.send("I'm sorry, I don't understand");
+    console.log(e);
     server.owner!.send("Encountered an error handling a message: " + e);
   }
 }
@@ -113,3 +117,5 @@ function sendSlowly(channel: TextChannel, responses: string[]): void {
     }, index * 1000);
   });
 }
+
+export { handleMessage };

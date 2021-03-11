@@ -10,7 +10,7 @@ const axios = rateLimit(
       token: process.env.API_KEY,
     },
   }),
-  { maxRequests: 2, perMilliseconds: 1000, maxRPS: 2 }
+  { maxRequests: 1, perMilliseconds: 150 }
 );
 
 axios.interceptors.request.use(

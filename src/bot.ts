@@ -10,19 +10,14 @@ import Discord, { Snowflake, TextChannel } from "discord.js";
 
 const bot = new Discord.Client()!;
 
-const loggedIn = await bot.login(process.env.DISCORD_TOKEN);
+await bot.login(process.env.DISCORD_TOKEN);
 
-const myPromise = await new Promise<void>((resolve, reject) => {
+await new Promise<void>((resolve, reject) => {
   bot.on("ready", () => {
     console.log("The bot is online, let's trade!");
     resolve();
   });
 });
-
-// bot.on("ready", () => {
-//   console.log("The bot is online, let's trade!");
-//   console.log(getAllUserIDs());
-// });
 
 const server = bot.guilds.cache.get(process.env.SERVER_ID!)!;
 

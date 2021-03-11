@@ -45,11 +45,15 @@ async function processTransaction(
   buy: boolean
 ) {
   const holdings = getHoldings(id);
+  console.log(typeof price);
   let totalCost = price * quantity;
   if (buy) {
     if (totalCost > holdings) {
       return [
-        `Sadly, you can't afford that`,
+        `Sadly, you can't afford that at ${price.toLocaleString("en-US", {
+          style: "currency",
+          currency: "USD",
+        })}`,
         `Maybe you should have trusted Elon`,
       ];
     }
@@ -62,10 +66,17 @@ async function processTransaction(
     quantity *= -1;
     totalCost *= -1;
   }
-
+  console.log(price);
+  console.log("sadasd");
   transact(id, symbol, quantity, totalCost, crypto);
   return [
-    `Successfully transacted ${quantity} shares of ${symbol}`,
+    `Successfully transacted ${quantity} shares of ${symbol} at ${price.toLocaleString(
+      "en-US",
+      {
+        style: "currency",
+        currency: "USD",
+      }
+    )}`,
     `Probably.`,
     `I don't have error logging for this part yet...`,
   ];

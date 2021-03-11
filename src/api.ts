@@ -3,9 +3,13 @@ import rateLimit from "axios-rate-limit";
 
 const { server } = await import("./bot.js");
 
+// closure to check the number of requests every so often
+// the precise frequency isn't super important so it's ok so do this in memory
+let numRequests = 0;
+
 const axios = rateLimit(
   a.create({
-    baseURL: "https://sandbox.iexapis.com/stable",
+    baseURL: process.env.API_HOST,
     params: {
       token: process.env.API_KEY,
     },
@@ -15,8 +19,7 @@ const axios = rateLimit(
 
 axios.interceptors.request.use(
   function (config) {
-    console.log(config.url);
-    if (config.url !== "/account/metadata") {
+    if (++numRequests % 10 === 0 && config.url !== "/account/metadata") {
       checkBalance();
     }
     return config;
@@ -44,7 +47,7 @@ async function quoteCrypto(symbol: string): Promise<Number> {
   const {
     data: { latestPrice },
   } = await axios.get(`/crypto/${symbol}/quote`);
-  return latestPrice;
+  return Number(latestPrice);
 }
 
 async function quote(symbol: string): Promise<Number> {

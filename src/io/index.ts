@@ -81,7 +81,6 @@ function helpHandler() {
     messagesToSend.push(prepareCommandMessage(command));
   });
   messagesToSend.push("and remember, stonks only go up!");
-  messagesToSend.push("BTW everything is disabled rn");
   return messagesToSend;
 }
 

@@ -5,7 +5,12 @@ async function quoteHandler(_id: Snowflake, [symbol]: string[]) {
   // TODO: find a better way to handle args
   try {
     const quoteResult = await quote(symbol);
-    return [`The latest price for ${symbol} is ${quoteResult}`];
+    return [
+      `The latest price for ${symbol} is ${quoteResult.toLocaleString("en-US", {
+        style: "currency",
+        currency: "USD",
+      })}`,
+    ];
   } catch (err) {
     if (err.response.status === 404) {
       return ["I don't know that symbol"];
@@ -17,8 +22,19 @@ async function quoteHandler(_id: Snowflake, [symbol]: string[]) {
 async function quoteCryptoHandler(_id: Snowflake, [symbol]: string[]) {
   // TODO: find a better way to handle args
   try {
-    const quoteResult = await quoteCrypto(symbol);
-    return [`The latest price for ${symbol} is ${quoteResult}`];
+    const quoteResult = Number(await quoteCrypto(symbol));
+    if (!quoteResult) {
+      throw new Error(`quote result was: ${quoteResult}`);
+    }
+    return [
+      `The latest price for ${symbol} is $${quoteResult.toLocaleString(
+        "en-US",
+        {
+          style: "currency",
+          currency: "USD",
+        }
+      )}`,
+    ];
   } catch (err) {
     if (err.response.status === 404) {
       return ["I don't know that symbol"];

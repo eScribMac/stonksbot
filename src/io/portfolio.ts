@@ -38,11 +38,20 @@ async function portfolioHandler(requester_id: Snowflake, args: string[]) {
     },
     { holdings: 0, positions: [], totalPositionValue: 0 }
   );
-  const holdingsString = `$${transformedPositions.holdings.toFixed(2)} in cash`;
+  const holdingsString = `${transformedPositions.holdings.toLocaleString(
+    "en-US",
+    {
+      style: "currency",
+      currency: "USD",
+    }
+  )} in cash`;
   const positionStrings = transformedPositions.positions.map(
     // @ts-ignore
     ({ symbol, quantity, value }) =>
-      `${symbol}: ${quantity} units at ${value.toFixed(2)}`
+      `${symbol}: ${quantity} units at ${value.toLocaleString("en-US", {
+        style: "currency",
+        currency: "USD",
+      })}`
   );
   const totalValue =
     transformedPositions.holdings + transformedPositions.totalPositionValue;
@@ -50,7 +59,10 @@ async function portfolioHandler(requester_id: Snowflake, args: string[]) {
     `Here is the summary for ${args[0]}`,
     holdingsString,
     ...positionStrings,
-    `Total Portfolio Value: $${totalValue.toFixed(2)}`,
+    `Total Portfolio Value: ${totalValue.toLocaleString("en-US", {
+      style: "currency",
+      currency: "USD",
+    })}`,
   ];
 }
 

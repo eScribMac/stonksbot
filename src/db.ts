@@ -62,13 +62,13 @@ export function insertUser(userID: Snowflake) {
     userID,
     STARTING_FUNDS
   );
-  stockChannel.send(
-    `Welcome <@${userID}>! You have been added to our Stock Simulator Game and you have been given $${STARTING_FUNDS} to start trading!`
-  );
-  setTimeout(
-    () => stockChannel.send(`For more information, mention me and type !help`),
-    2000
-  );
+  //  stockChannel.send(
+  //   `Welcome <@${userID}>! You have been added to our Stock Simulator Game and you have been given ${STARTING_FUNDS.toLocaleString('en-US', {style: 'currency',currency: 'USD',})} to start trading!`
+  // );
+  // setTimeout(
+  //   () => stockChannel.send(`For more information, mention me and type !help`),
+  //   2000
+  // );
 }
 
 export function getHoldings(userID: Snowflake) {
